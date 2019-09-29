@@ -1,4 +1,4 @@
-package com.ww.springbootcommunity.dao;
+package com.ww.springbootcommunity.dto;
 
 /**
  * 实现用Github登录 需要用到的信息字段

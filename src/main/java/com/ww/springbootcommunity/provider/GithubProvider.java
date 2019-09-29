@@ -1,8 +1,8 @@
 package com.ww.springbootcommunity.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.ww.springbootcommunity.dao.AccessTokenDao;
-import com.ww.springbootcommunity.dao.GithubUser;
+import com.ww.springbootcommunity.dto.AccessTokenDao;
+import com.ww.springbootcommunity.dto.GithubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 

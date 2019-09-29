@@ -1,4 +1,4 @@
-package com.ww.springbootcommunity.dao;
+package com.ww.springbootcommunity.dto;
 
 
 /**

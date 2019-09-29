@@ -1,14 +1,19 @@
 package com.ww.springbootcommunity.controller;
 
 
-import com.ww.springbootcommunity.dao.AccessTokenDao;
-import com.ww.springbootcommunity.dao.GithubUser;
+import com.ww.springbootcommunity.dto.AccessTokenDao;
+import com.ww.springbootcommunity.dto.GithubUser;
+import com.ww.springbootcommunity.entity.User;
+import com.ww.springbootcommunity.mapper.UserMapper;
 import com.ww.springbootcommunity.provider.GithubProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.UUID;
 
 /**
  *  Github登录调用，获取信息
@@ -28,10 +33,16 @@ public class AuthorizeControlle {
     @Value("${github.redirect_url}")
     private String redirectUrl;
 
+    @Autowired
+    private UserMapper userMapper;
+
 
     @GetMapping("/callback")
-    public String callback(@RequestParam(name = "code") String code , @RequestParam(name = "state") String state) {
-
+    public String callback(@RequestParam(name = "code") String code ,
+                           @RequestParam(name = "state") String state ,
+                           // session是再HttP的request 拿到的
+                           HttpServletRequest request
+                           ) {
         AccessTokenDao accessToken = new AccessTokenDao();
         accessToken.setClient_id(clientId);
         accessToken.setClient_secret(clientSecret);
@@ -40,8 +51,25 @@ public class AuthorizeControlle {
         accessToken.setState(state);
 
         String aTk = githubProvider.getAccessToken(accessToken);
-        GithubUser user = githubProvider.getUser(aTk);
-        System.out.println(user.getName());
-        return "index";
+        //获取到用github登录的用户信息
+        GithubUser githubUser = githubProvider.getUser(aTk);
+        //System.out.println(user.getName());
+
+        if(githubUser != null) {
+            //登录成功，写 cookie 和 session
+            User user = new User();
+            user.setAccountId(String.valueOf(githubUser.getId()));
+            user.setName(githubUser.getName());
+            user.setToken(UUID.randomUUID().toString());
+            user.setCreateTime(System.currentTimeMillis());//System.currentTimeMillis产生一个当前的毫秒时间
+            user.setUpdateTime(user.getCreateTime());
+
+            userMapper.Insert(user);
+            request.getSession().setAttribute("user" , githubUser);
+            return "redirect:/";//redirect是重定向，redirect跳转的是路径，不是页面
+        }else {
+            //登录失败，重新登录
+            return "redirect:/";
+        }
     }
 }
