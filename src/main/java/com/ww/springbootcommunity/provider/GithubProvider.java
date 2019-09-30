@@ -1,7 +1,7 @@
 package com.ww.springbootcommunity.provider;
 
 import com.alibaba.fastjson.JSON;
-import com.ww.springbootcommunity.dto.AccessTokenDao;
+import com.ww.springbootcommunity.dto.AccessTokenDTO;
 import com.ww.springbootcommunity.dto.GithubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
@@ -19,7 +19,7 @@ public class GithubProvider {
      * @param accessToken
      * @return
      */
-    public String getAccessToken(AccessTokenDao accessToken) {
+    public String getAccessToken(AccessTokenDTO accessToken) {
 
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
 

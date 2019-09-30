@@ -1,7 +1,7 @@
 package com.ww.springbootcommunity.controller;
 
 
-import com.ww.springbootcommunity.dto.AccessTokenDao;
+import com.ww.springbootcommunity.dto.AccessTokenDTO;
 import com.ww.springbootcommunity.dto.GithubUser;
 import com.ww.springbootcommunity.entity.User;
 import com.ww.springbootcommunity.mapper.UserMapper;
@@ -44,7 +44,7 @@ public class AuthorizeControlle {
                            // 通过response写入一个cookie
                            HttpServletResponse response
                            ) {
-        AccessTokenDao accessToken = new AccessTokenDao();
+        AccessTokenDTO accessToken = new AccessTokenDTO();
         accessToken.setClient_id(clientId);
         accessToken.setClient_secret(clientSecret);
         accessToken.setCode(code);
@@ -65,6 +65,7 @@ public class AuthorizeControlle {
             user.setToken(token);
             user.setCreateTime(System.currentTimeMillis());//System.currentTimeMillis产生一个当前的毫秒时间
             user.setUpdateTime(user.getCreateTime());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             userMapper.Insert(user);
             response.addCookie(new Cookie("token", token));//自己写一个cookie用来保存用户登录，再登录首页是判断cookie是否存在
 

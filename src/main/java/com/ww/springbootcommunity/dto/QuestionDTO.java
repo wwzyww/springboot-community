@@ -1,10 +1,11 @@
-package com.ww.springbootcommunity.entity;
+package com.ww.springbootcommunity.dto;
 
 
+import com.ww.springbootcommunity.entity.User;
 import lombok.Data;
 
 @Data
-public class Question {
+public class QuestionDTO {
     private Integer id;
     private String title;
     private String description;
@@ -15,6 +16,5 @@ public class Question {
     private Integer viewCount;
     private Integer likeCount;
     private String tag;
-
+    private User user;
 }
-
