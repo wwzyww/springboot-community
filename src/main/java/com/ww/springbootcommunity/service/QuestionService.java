@@ -1,5 +1,6 @@
 package com.ww.springbootcommunity.service;
 
+import com.ww.springbootcommunity.dto.PageDTO;
 import com.ww.springbootcommunity.dto.QuestionDTO;
 import com.ww.springbootcommunity.entity.Question;
 import com.ww.springbootcommunity.entity.User;
@@ -21,9 +22,26 @@ public class QuestionService {
     @Autowired
     private UserMapper userMapper;
 
-    public List<QuestionDTO> querylist() {
-        List<Question> querylist = questionMapper.querylist();
+    public PageDTO querylist(Integer page, Integer size) {
+
+        PageDTO pageDTO = new PageDTO();
+        Integer totalCount = questionMapper.count();
+        pageDTO.setPageDTO(totalCount,page,size);
+        if(page < 1) {
+            page = 1;
+        }
+        if (page > pageDTO.getTotalPage()) {
+            page = pageDTO.getTotalPage();
+        }
+
+
+
+        Integer offset = size * (page - 1);
+
+        List<Question> querylist = questionMapper.querylist(offset,size);
         List<QuestionDTO> questionDTOList = new ArrayList<>();
+
+
         for (Question question : querylist) {
             User user = userMapper.findById(question.getCreator());
             QuestionDTO questionDTO = new QuestionDTO();
@@ -32,6 +50,8 @@ public class QuestionService {
             questionDTO.setUser(user);
             questionDTOList.add(questionDTO);
         }
-        return questionDTOList;
+        pageDTO.setQuestions(questionDTOList);
+
+        return pageDTO;
     }
 }
