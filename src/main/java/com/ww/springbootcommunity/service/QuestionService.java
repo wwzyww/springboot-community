@@ -125,8 +125,24 @@ public class QuestionService {
             questionMapper.insert(question);
         }else {
             //更新
+            question.setCreateTime(System.currentTimeMillis());
             question.setUpdateTime(question.getCreateTime());
             questionMapper.update(question);
         }
     }
+
+
+
+    //------------------- 引入mybatis ----- xml文件后 写的sql ， 但是太懒了，前面的不想改，就这样  -----------------
+
+
+    /**
+     * 查询所有
+     * @param question
+     * @return
+     */
+    public List queryQuestionList(Question question) {
+        return questionMapper.queryQuestionList(question);
+    }
+
 }

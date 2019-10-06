@@ -4,7 +4,6 @@ package com.ww.springbootcommunity.controller;
 import com.ww.springbootcommunity.dto.AccessTokenDTO;
 import com.ww.springbootcommunity.dto.GithubUser;
 import com.ww.springbootcommunity.entity.User;
-import com.ww.springbootcommunity.mapper.UserMapper;
 import com.ww.springbootcommunity.provider.GithubProvider;
 import com.ww.springbootcommunity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

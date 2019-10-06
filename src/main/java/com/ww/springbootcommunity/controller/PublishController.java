@@ -4,7 +4,6 @@ package com.ww.springbootcommunity.controller;
 import com.ww.springbootcommunity.dto.QuestionDTO;
 import com.ww.springbootcommunity.entity.Question;
 import com.ww.springbootcommunity.entity.User;
-import com.ww.springbootcommunity.mapper.QuestionMapper;
 import com.ww.springbootcommunity.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

@@ -5,7 +5,17 @@
 
 <generatorConfiguration>
 
-    <!--mvn -Dmybatis.generator.overwite=true mybatis-generator:generate-->
+    <!-- 执行语句 mvn -Dmybatis.generator.overwite=true mybatis-generator:generate-->
+    <!--       记得把生成的xml的开头的 和 返回对象的路径
+                  <mapper namespace="com.ww.springbootcommunity.mapper.QuestionMapper">
+                  改好成你自己实体和接口的路径
+                  因为这里我不用生成的，在resources的都是没用的，我用的是自己新建在src/main/java/..下面的
+                  resources下的entity，会重写在src/main/java/entity
+                  interface会重写在src/main/java/mapper
+
+                  注意：全部都要改完，不然启动报错
+
+                  -->
 
     <!--导入属性配置-->
     <properties resource="application.properties"></properties>
@@ -27,7 +37,7 @@
             <property name="forceBigDecimals" value="false" />
         </javaTypeResolver>
 
-        <javaModelGenerator targetPackage="com.ww.springbootcommunity.entity" targetProject="src/main/java">
+        <javaModelGenerator targetPackage="entity" targetProject="src/main/resources">
             <property name="enableSubPackages" value="true" />
             <property name="trimStrings" value="true" />
         </javaModelGenerator>
@@ -36,7 +46,7 @@
             <property name="enableSubPackages" value="true" />
         </sqlMapGenerator>
 
-        <javaClientGenerator type="XMLMAPPER" targetPackage="com.ww.springbootcommunity.mapper"  targetProject="src/main/java">
+        <javaClientGenerator type="XMLMAPPER" targetPackage="interface"  targetProject="src/main/resources">
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 

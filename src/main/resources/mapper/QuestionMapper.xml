@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ww.springbootcommunity.mapper.QuestionMapper">
+
+  <!--                                                                     -->
+
+  <resultMap id="QuestionResultMap" type="com.ww.springbootcommunity.entity.Question">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="description" jdbcType="VARCHAR" property="description" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="creator" jdbcType="INTEGER" property="creator" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="view_count" jdbcType="INTEGER" property="viewCount" />
+    <result column="like_count" jdbcType="INTEGER" property="likeCount" />
+    <result column="tag" jdbcType="VARCHAR" property="tag" />
+  </resultMap>
+
+
+  <!-- 查询所有 -->
+  <sql id="query_Question_List">
+    select
+    q.id,
+    q.title,
+    q.description,
+    q.create_time,
+    q.update_time,
+    q.creator,
+    q.comment_count,
+    q.view_count,
+    q.like_count,
+    q.tag
+    from question q
+    <where>
+      <if test="id != null and id != 0">
+        q.id = #{id}
+      </if>
+      <if test="title != null and title != ''">
+        and q.title = #{title}
+      </if>
+      <if test="description != null and description != ''">
+        and q.description = #{description}
+      </if>
+      <if test="createTime != null and createTime != ''">
+        and q.create_time = #{createTime}
+      </if>
+      <if test="updateTime != null and updateTime != ''">
+        and q.update_time = #{updateTime}
+      </if>
+      <if test="creator != null and creator != ''">
+        and q.creator = #{creator}
+      </if>
+      <if test="commentCount != null and commentCount != ''">
+        and q.comment_count = #{commentCount}
+      </if>
+      <if test="viewCount != null and viewCount != ''">
+        and q.view_count = #{viewCount}
+      </if>
+      <if test="likeCount != null and likeCount != ''">
+        and q.like_count = #{likeCount}
+      </if>
+      <if test="tag != null and tag != ''">
+        and q.tag = #{tag}
+      </if>
+    </where>
+        order by q.id desc
+  </sql>
+  <select id="queryQuestionList" parameterType="com.ww.springbootcommunity.entity.Question" resultMap="QuestionResultMap" >
+      <include refid="query_Question_List"/>
+  </select>
+
+
+
+
+
+
+</mapper>

@@ -12,17 +12,4 @@
     <result column="avatar_url" jdbcType="VARCHAR" property="avatarUrl" />
   </resultMap>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-  </mapper>
+</mapper>
