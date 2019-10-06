@@ -18,13 +18,9 @@ public class PageDTO {
     private  Integer totalPage;
 
 
-    public void setPageDTO(Integer totalCount, Integer page, Integer size) {
-        if (totalCount % size ==0){
-            totalPage = totalCount /size;
-        }else {
-            totalPage = totalCount /size + 1;
-        }
+    public void setPageDTO(Integer totalPage, Integer page) {
 
+        this.totalPage = totalPage;
         this.page = page;
 
         pages.add(page);

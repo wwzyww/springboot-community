@@ -1,24 +1,27 @@
 package com.ww.springbootcommunity.controller;
 
 
+import com.ww.springbootcommunity.dto.QuestionDTO;
 import com.ww.springbootcommunity.entity.Question;
 import com.ww.springbootcommunity.entity.User;
 import com.ww.springbootcommunity.mapper.QuestionMapper;
+import com.ww.springbootcommunity.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
+
 
 
 @Controller
 public class PublishController {
 
     @Autowired
-    private QuestionMapper questionMapper;
+    private QuestionService questionService;
 
 
     @GetMapping("/publish")
@@ -33,9 +36,7 @@ public class PublishController {
         model.addAttribute("description",question.getDescription());
         model.addAttribute("tag",question.getTag());
 
-        HttpSession session = request.getSession();
-        User user = (User) session.getAttribute("user");
-
+        User user = (User)request.getSession().getAttribute("user");
         if(user == null){
             model.addAttribute("error","用户未登录！");
             return "publish";
@@ -49,11 +50,24 @@ public class PublishController {
         if(question.getLikeCount() == null){
             question.setLikeCount(0);
         }
+
         question.setCreator(user.getId());
-        question.setCreateTime(System.currentTimeMillis());
-        question.setUpdateTime(question.getCreateTime());
-        questionMapper.insert(question);
+
+        questionService.createOrUpdate(question);
         return "redirect:/";
+    }
+
+    @GetMapping("/publish/{id}")
+    public String edit(@PathVariable(name = "id") Integer id, Model model) {
+
+        QuestionDTO question = questionService.getById(id);
+        //用来回显
+        model.addAttribute("title",question.getTitle());
+        model.addAttribute("description",question.getDescription());
+        model.addAttribute("tag",question.getTag());
+        model.addAttribute("id",question.getId());
+
+        return "publish";
     }
 
 }

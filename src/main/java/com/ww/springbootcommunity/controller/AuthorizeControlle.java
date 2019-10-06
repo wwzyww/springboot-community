@@ -6,6 +6,7 @@ import com.ww.springbootcommunity.dto.GithubUser;
 import com.ww.springbootcommunity.entity.User;
 import com.ww.springbootcommunity.mapper.UserMapper;
 import com.ww.springbootcommunity.provider.GithubProvider;
+import com.ww.springbootcommunity.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.UUID;
 
@@ -35,7 +37,7 @@ public class AuthorizeControlle {
     private String redirectUrl;
 
     @Autowired
-    private UserMapper userMapper;
+    private UserService userService;
 
 
     @GetMapping("/callback")
@@ -63,10 +65,10 @@ public class AuthorizeControlle {
             user.setName(githubUser.getName());
             String token = UUID.randomUUID().toString();
             user.setToken(token);
-            user.setCreateTime(System.currentTimeMillis());//System.currentTimeMillis产生一个当前的毫秒时间
-            user.setUpdateTime(user.getCreateTime());
+           /* user.setCreateTime(System.currentTimeMillis());//System.currentTimeMillis产生一个当前的毫秒时间
+            user.setUpdateTime(user.getCreateTime());*/
             user.setAvatarUrl(githubUser.getAvatarUrl());
-            userMapper.Insert(user);
+            userService.createOrUpdate(user);
             response.addCookie(new Cookie("token", token));//自己写一个cookie用来保存用户登录，再登录首页是判断cookie是否存在
 
             return "redirect:/";//redirect是重定向，redirect跳转的是路径，不是页面
@@ -74,5 +76,14 @@ public class AuthorizeControlle {
             //登录失败，重新登录
             return "redirect:/";
         }
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletResponse response,HttpServletRequest request) {
+
+        request.getSession().removeAttribute("user");
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return "redirect:/";
     }
 }
