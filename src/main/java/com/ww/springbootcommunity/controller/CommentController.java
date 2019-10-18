@@ -47,7 +47,7 @@ public class CommentController {
             comment.setUpdateTime(comment.getCreateTime());
             comment.setCommentator(user.getId());
 
-            commentService.insertComment(comment);
+            commentService.insertComment(comment,user);
 
             return new ResultDTO(100,"回复成功！！！");
         }
@@ -81,7 +81,7 @@ public class CommentController {
         comment.setCreateTime(System.currentTimeMillis());
         comment.setUpdateTime(comment.getCreateTime());
         comment.setCommentator(user.getId());
-        commentService.insertComment(comment);
+        commentService.insertComment(comment,user);
         return new ResultDTO(100,"回复成功！！！");
     }
 

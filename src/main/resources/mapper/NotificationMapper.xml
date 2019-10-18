@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ww.springbootcommunity.mapper.NotificationMapper">
+  <resultMap id="NotificationResultMap" type="com.ww.springbootcommunity.entity.Notification">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="notifier" jdbcType="INTEGER" property="notifier" />
+    <result column="receiver" jdbcType="INTEGER" property="receiver" />
+    <result column="outer_id" jdbcType="INTEGER" property="outerId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="status" jdbcType="INTEGER" property="status" />
+    <result column="notifier_name" jdbcType="VARCHAR" property="notifierName" />
+    <result column="outer_title" jdbcType="VARCHAR" property="outerTitle" />
+  </resultMap>
+
+
+
+  <!-- 查询所有 -->
+  <sql id="query_Notification_List">
+    select
+    *
+    from Notification n
+    <where>
+      <if test="id != null and id != 0">
+        n.id = #{id}
+      </if>
+      <if test="notifier != null and notifier != ''">
+        and n.notifier = #{notifier}
+      </if>
+      <if test="receiver != null and receiver != ''">
+        and n.receiver = #{receiver}
+      </if>
+      <if test="outerId != null and outerId != ''">
+        and n.outer_id = #{outerId}
+      </if>
+      <if test="type != null and type != ''">
+        and n.type = #{type}
+      </if>
+      <if test="createTime != null and createTime != ''">
+        and n.create_time = #{createTime}
+      </if>
+      <if test="status != null and status != ''">
+        and n.status = #{status}
+      </if>
+      <if test="notifierName != null and notifierName != ''">
+        and n.notifier_name = #{notifierName}
+      </if>
+      <if test="outerTitle != null and outerTitle != ''">
+        and n.outer_title = #{outerTitle}
+      </if>
+    </where>
+    order by n.id desc
+  </sql>
+  <select id="queryNotificationtList" parameterType="com.ww.springbootcommunity.entity.Notification" resultMap="NotificationResultMap" >
+    <include refid="query_Notification_List"/>
+  </select>
+  <!-- 根据id查询 -->
+  <sql id="query_Notification_ById">
+    select
+     *
+    from Notification
+    where id = #{id}
+  </sql>
+  <select id="queryNotificationById" parameterType="Integer" resultMap="NotificationResultMap">
+    <include refid="query_Notification_ById"/>
+  </select>
+  <!-- 新增 -->
+  <sql id="Insert_Notification">
+    insert into Notification
+    <trim prefix="(" suffixOverrides="," suffix=")">
+      <if test="id != null and id != 0">id,</if>
+      <if test="notifier != null and notifier != ''">notifier,</if>
+      <if test="receiver != null and receiver != ''">receiver,</if>
+      <if test="outerId != null and outerId != ''">outer_id,</if>
+      <if test="type != null and type != ''">type,</if>
+      <if test="createTime != null and createTime != ''">create_time,</if>
+      <if test="status != null and status != ''">status,</if>
+      <if test="notifierName != null and notifierName != ''">notifier_name,</if>
+      <if test="outerTitle != null and outerTitle != ''">outer_title,</if>
+    </trim>
+    values
+    <trim prefix="(" suffixOverrides="," suffix=")">
+      <if test="id != null and id != 0">#{id},</if>
+      <if test="notifier != null and notifier != ''">#{notifier},</if>
+      <if test="receiver != null and receiver != ''">#{receiver},</if>
+      <if test="outerId != null and outerId != ''">#{outerId},</if>
+      <if test="type != null and type != ''">#{type},</if>
+      <if test="createTime != null and createTime != ''">#{createTime},</if>
+      <if test="status != null and status != ''">#{status},</if>
+      <if test="notifierName != null and notifierName != ''">#{notifierName},</if>
+      <if test="outerTitle != null and outerTitle != ''">#{outerTitle},</if>
+    </trim>
+  </sql>
+  <insert id="insertNotification"  parameterType="com.ww.springbootcommunity.entity.Notification" useGeneratedKeys="true" keyProperty="id">
+    <include refid="Insert_Notification"/>
+  </insert>
+  <!-- 修改 -->
+  <sql id="Update_Notification">
+    update Notification
+    <set>
+      <if test="id != null and id != 0">id = #{id},</if>
+      <if test="notifier != null and notifier != ''">notifier = #{notifier},</if>
+      <if test="receiver != null and receiver != ''">receiver = #{receiver},</if>
+      <if test="outerId != null and outerId != ''">outer_id = #{outerId},</if>
+      <if test="type != null and type != ''">type = #{type},</if>
+      <if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
+      <if test="status != null and status != ''">status = #{status},</if>
+      <if test="notifierName != null and notifierName != ''">notifier_name = #{notifierName},</if>
+      <if test="outerTitle != null and outerTitle != ''">outer_title = #{outerTitle},</if>
+    </set>
+    where id = #{id}
+  </sql>
+  <update id="updateNotification" parameterType="com.ww.springbootcommunity.entity.Notification">
+    <include refid="Update_Notification" />
+  </update>
+  <!-- 删除 -->
+  <delete id="deleteNotificationById" parameterType="Integer">
+    delete from Notification where id = #{id}
+  </delete>
+
+<!--显示未读消息总数-->
+  <sql id="unread_Count">
+    select
+    count(1)
+    from Notification
+    where receiver = #{id} and status=0
+  </sql>
+  <select id="unreadCount" parameterType="Integer" resultType="Integer">
+    <include refid="unread_Count"/>
+  </select>
+
+
+
+
+</mapper>
