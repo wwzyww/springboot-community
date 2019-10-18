@@ -39,10 +39,49 @@ public interface QuestionMapper {
 
 
     /**
-     * 查询所有  实验
+     * 查询所有
      * @param question
      * @return
      */
     List<Question> queryQuestionList(Question question);
+
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    Question queryQuestionById(Integer id);
+
+    /**
+     * 新增
+     * @param question
+     */
+    void insertQuestion(Question question);
+    /**
+     * 修改
+     * @param question
+     */
+    void updateQuestion(Question question);
+
+    /**
+     * 根据id删除
+     * @param id
+     */
+    void deleteQuestionById(Integer id);
+
+    /**
+     * 累加阅读数  这样防止高并发
+     * @param question
+     */
+    void incView(Question question);
+
+    /**
+     * 累加评论数  这样防止高并发
+     * @param question
+     */
+    void incCommentCount(Question question);
+
+    List<Question> queryQuestionTag(Question question);
+
 
 }

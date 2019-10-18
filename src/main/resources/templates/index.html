@@ -15,6 +15,18 @@
     <link rel="stylesheet" href="/static/community.css">
 
 </head>
+
+<script type="application/javascript" >
+    window.onload = function () {
+        var closable = window.localStorage.getItem("closable");
+        if(closable){
+            window.close();
+            window.localStorage.removeItem("closable");
+        }
+
+    }
+</script>
+
 <body>
 
 <div th:insert="~{navigation :: nav}"></div>

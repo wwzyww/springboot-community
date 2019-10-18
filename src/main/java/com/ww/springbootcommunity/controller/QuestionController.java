@@ -1,7 +1,10 @@
 package com.ww.springbootcommunity.controller;
 
+import com.ww.springbootcommunity.dto.CommentDTO;
 import com.ww.springbootcommunity.dto.QuestionDTO;
+import com.ww.springbootcommunity.entity.Comment;
 import com.ww.springbootcommunity.entity.Question;
+import com.ww.springbootcommunity.service.CommentService;
 import com.ww.springbootcommunity.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,10 +22,22 @@ public class QuestionController {
     @Autowired
     private QuestionService questionService;
 
+    @Autowired
+    private CommentService commentService;
+
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id") Integer id , Model model) {
+
         QuestionDTO questionDTO = questionService.getById(id);
+
+        List<QuestionDTO> relatedQuestions = questionService.queryQuestionTag(questionDTO);
+        List<CommentDTO> commentDTO = commentService.listQuestionById(id);
+
+        //累加阅读数
+        questionService.incView(id);
         model.addAttribute("question",questionDTO);
+        model.addAttribute("relatedQuestions",relatedQuestions);
+        model.addAttribute("commentDTO",commentDTO);
         return "question";
     }
 
@@ -45,5 +60,9 @@ public class QuestionController {
         return questionService.queryQuestionList(question);
     }
 
-
+    @ResponseBody
+    @RequestMapping("/queryQuestionById")
+    public Question queryQuestionById(Integer id)  {
+        return questionService.queryQuestionById(id);
+    }
 }

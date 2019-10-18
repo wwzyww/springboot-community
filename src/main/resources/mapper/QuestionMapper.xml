@@ -69,10 +69,119 @@
   <select id="queryQuestionList" parameterType="com.ww.springbootcommunity.entity.Question" resultMap="QuestionResultMap" >
       <include refid="query_Question_List"/>
   </select>
+  <!-- 根据id查询 -->
+  <sql id="query_Question_ById">
+    select
+      q.id,
+      q.title,
+      q.description,
+      q.create_time,
+      q.update_time,
+      q.creator,
+      q.comment_count,
+      q.view_count,
+      q.like_count,
+      q.tag
+    from question q
+    where q.id = #{id}
+  </sql>
+  <select id="queryQuestionById" parameterType="Integer" resultMap="QuestionResultMap">
+    <include refid="query_Question_ById"/>
+  </select>
+
+  <!-- 新增 -->
+  <sql id="Insert_Question">
+    insert into question
+    <trim prefix="(" suffixOverrides="," suffix=")">
+      <if test="id != null and id != 0">id,</if>
+      <if test="title != null and title != ''">title,</if>
+      <if test="description != null and description != ''">description,</if>
+      <if test="createTime != null and createTime != ''">create_time,</if>
+      <if test="updateTime != null and updateTime != ''">update_time,</if>
+      <if test="creator != null and creator != ''">creator,</if>
+      <if test="commentCount != null and commentCount != ''">comment_count,</if>
+      <if test="viewCount != null and viewCount != ''">view_count,</if>
+      <if test="likeCount != null and likeCount != ''">like_count,</if>
+      <if test="tag != null and tag != ''">tag,</if>
+    </trim>
+    values
+    <trim prefix="(" suffixOverrides="," suffix=")">
+      <if test="id != null and id != 0">#{id},</if>
+      <if test="title != null and title != ''">#{title},</if>
+      <if test="description != null and description != ''">#{description},</if>
+      <if test="createTime != null and createTime != ''">#{createTime},</if>
+      <if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+      <if test="creator != null and creator != ''">#{creator},</if>
+      <if test="commentCount != null and commentCount != ''">#{commentCount},</if>
+      <if test="viewCount != null and viewCount != ''">#{viewCount},</if>
+      <if test="likeCount != null and likeCount != ''">#{likeCount},</if>
+      <if test="tag != null and tag != ''">#{tag},</if>
+    </trim>
+  </sql>
+  <insert id="insertQuestion"  parameterType="com.ww.springbootcommunity.entity.Question" useGeneratedKeys="true" keyProperty="id">
+    <include refid="Insert_Question"/>
+  </insert>
+  <!-- 修改 -->
+  <sql id="Update_Question">
+    update question
+    <set>
+      <if test="id != null and id != 0">id = #{id},</if>
+      <if test="title != null and title != ''">title = #{title},</if>
+      <if test="description != null and description != ''">description = #{description},</if>
+      <if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
+      <if test="updateTime != null and updateTime != ''">update_time = #{updateTime},</if>
+      <if test="creator != null and creator != ''">creator = #{creator},</if>
+      <if test="commentCount != null and commentCount != ''">comment_count = #{commentCount},</if>
+      <if test="viewCount != null and viewCount != ''">view_count = #{viewCount},</if>
+      <if test="likeCount != null and likeCount != ''">like_count = #{likeCount},</if>
+      <if test="tag != null and tag != ''">tag = #{tag},</if>
+    </set>
+    where id = #{id}
+  </sql>
+  <update id="updateQuestion" parameterType="com.ww.springbootcommunity.entity.Question">
+    <include refid="Update_Question" />
+  </update>
+  <!-- 删除 -->
+  <delete id="deleteQuestionById" parameterType="Integer">
+    delete from question where id = #{id}
+  </delete>
+
+  <!-- 累加阅读数  这样防止高并发 -->
+  <update id="incView" parameterType="com.ww.springbootcommunity.entity.Question">
+    update question
+    set
+    view_count = view_count + #{viewCount}
+    where id = #{id}
+  </update>
+
+  <!-- 累加评论数  这样防止高并发 -->
+  <update id="incCommentCount" parameterType="com.ww.springbootcommunity.entity.Question">
+    update question
+    set
+    comment_count = comment_count + #{commentCount}
+    where id = #{id}
+  </update>
 
 
-
-
+  <!-- 根据id查询 -->
+  <sql id="query_Question_Tag">
+    select
+      q.id,
+      q.title,
+      q.description,
+      q.create_time,
+      q.update_time,
+      q.creator,
+      q.comment_count,
+      q.view_count,
+      q.like_count,
+      q.tag
+    from question q
+    where q.id != #{id} and q.tag regexp #{tag}
+  </sql>
+  <select id="queryQuestionTag" parameterType="com.ww.springbootcommunity.entity.Question" resultMap="QuestionResultMap">
+    <include refid="query_Question_Tag"/>
+  </select>
 
 
 </mapper>

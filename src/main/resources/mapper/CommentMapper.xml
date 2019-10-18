@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ww.springbootcommunity.mapper.CommentMapper">
+
+
+  <resultMap id="CommentResultMap" type="com.ww.springbootcommunity.entity.Comment">
+    <result column="id" jdbcType="INTEGER" property="id" />
+    <result column="parent_id" jdbcType="INTEGER" property="parentId" />
+    <result column="type" jdbcType="INTEGER" property="type" />
+    <result column="commentator" jdbcType="INTEGER" property="commentator" />
+    <result column="create_time" jdbcType="BIGINT" property="createTime" />
+    <result column="update_time" jdbcType="BIGINT" property="updateTime" />
+    <result column="comment_count" jdbcType="INTEGER" property="commentCount" />
+    <result column="like_count" jdbcType="INTEGER" property="likeCount" />
+    <result column="content" jdbcType="VARCHAR" property="content" />
+  </resultMap>
+
+  <!-- 查询所有 -->
+  <sql id="query_Comment_List">
+    select
+    co.id,
+    co.parent_id,
+    co.type,
+    co.commentator,
+    co.create_time,
+    co.update_time,
+    co.comment_count,
+    co.like_count,
+    co.content
+    from comment co
+    <where>
+      <if test="id != null and id != 0">
+        co.id = #{id}
+      </if>
+      <if test="parentId != null and parentId != ''">
+        and co.parent_id = #{parentId}
+      </if>
+      <if test="type != null and type != ''">
+        and co.type = #{type}
+      </if>
+      <if test="commentator != null and commentator != ''">
+        and co.commentator = #{commentator}
+      </if>
+      <if test="createTime != null and createTime != ''">
+        and co.create_time = #{createTime}
+      </if>
+      <if test="updateTime != null and updateTime != ''">
+        and co.update_time = #{updateTime}
+      </if>
+      <if test="commentCount != null and commentCount != ''">
+        and co.comment_count = #{commentCount}
+      </if>
+      <if test="likeCount != null and likeCount != ''">
+        and co.like_count = #{likeCount}
+      </if>
+      <if test="content != null and content != ''">
+        and co.content = #{content}
+      </if>
+    </where>
+    order by co.id desc
+  </sql>
+  <select id="queryCommentList" parameterType="com.ww.springbootcommunity.entity.Comment" resultMap="CommentResultMap" >
+    <include refid="query_Comment_List"/>
+  </select>
+  <!-- 根据id查询 -->
+  <sql id="query_Comment_ById">
+    select
+      co.id,
+      co.parent_id,
+      co.type,
+      co.commentator,
+      co.create_time,
+      co.update_time,
+      co.comment_count,
+      co.like_count,
+      co.content
+    from comment co
+    where co.id = #{id}
+  </sql>
+  <select id="queryCommentById" parameterType="Integer" resultMap="CommentResultMap">
+    <include refid="query_Comment_ById"/>
+  </select>
+  <!-- 新增 -->
+  <sql id="Insert_Comment">
+    insert into comment
+    <trim prefix="(" suffixOverrides="," suffix=")">
+      <if test="id != null and id != 0">id,</if>
+      <if test="parentId != null and parentId != ''">parent_id,</if>
+      <if test="type != null and type != ''">type,</if>
+      <if test="commentator != null and commentator != ''">commentator,</if>
+      <if test="createTime != null and createTime != ''">create_time,</if>
+      <if test="updateTime != null and updateTime != ''">update_time,</if>
+      <if test="commentCount != null and commentCount != ''">comment_count,</if>
+      <if test="likeCount != null and likeCount != ''">like_count,</if>
+      <if test="content != null and content != ''">content,</if>
+    </trim>
+    values
+    <trim prefix="(" suffixOverrides="," suffix=")">
+      <if test="id != null and id != 0">#{id},</if>
+      <if test="parentId != null and parentId != ''">#{parentId},</if>
+      <if test="type != null and type != ''">#{type},</if>
+      <if test="commentator != null and commentator != ''">#{commentator},</if>
+      <if test="createTime != null and createTime != ''">#{createTime},</if>
+      <if test="updateTime != null and updateTime != ''">#{updateTime},</if>
+      <if test="commentCount != null and commentCount != ''">#{commentCount},</if>
+      <if test="likeCount != null and likeCount != ''">#{likeCount},</if>
+      <if test="content != null and content != ''">#{content},</if>
+    </trim>
+  </sql>
+  <insert id="insertComment"  parameterType="com.ww.springbootcommunity.entity.Comment" useGeneratedKeys="true" keyProperty="id">
+    <include refid="Insert_Comment"/>
+  </insert>
+  <!-- 修改 -->
+  <sql id="Update_Comment">
+    update comment
+    <set>
+      <if test="id != null and id != 0">id = #{id},</if>
+      <if test="parentId != null and parentId != ''">parent_id = #{parentId},</if>
+      <if test="type != null and type != ''">type = #{type},</if>
+      <if test="commentator != null and commentator != ''">commentator = #{commentator},</if>
+      <if test="createTime != null and createTime != ''">create_time = #{createTime},</if>
+      <if test="updateTime != null and updateTime != ''">update_time = #{updateTime},</if>
+      <if test="commentCount != null and commentCount != ''">like_count = #{commentCount},</if>
+      <if test="likeCount != null and likeCount != ''">like_count = #{likeCount},</if>
+      <if test="content != null and content != ''">content = #{content},</if>
+    </set>
+    where id = #{id}
+  </sql>
+  <update id="updateComment" parameterType="com.ww.springbootcommunity.entity.Comment">
+    <include refid="Update_Comment" />
+  </update>
+  <!-- 删除 -->
+  <delete id="deleteCommentById" parameterType="Integer">
+    delete from comment where id = #{id}
+  </delete>
+
+  <!-- 累加回复数  这样防止高并发 -->
+  <update id="incCommentCount" parameterType="com.ww.springbootcommunity.entity.Comment">
+    update comment
+    set
+      comment_count = comment_count + #{commentCount}
+    where id = #{id}
+  </update>
+
+
+
+
+
+
+</mapper>

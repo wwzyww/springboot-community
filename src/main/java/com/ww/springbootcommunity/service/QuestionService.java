@@ -6,12 +6,15 @@ import com.ww.springbootcommunity.entity.Question;
 import com.ww.springbootcommunity.entity.User;
 import com.ww.springbootcommunity.mapper.QuestionMapper;
 import com.ww.springbootcommunity.mapper.UserMapper;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class QuestionService {
@@ -145,4 +148,64 @@ public class QuestionService {
         return questionMapper.queryQuestionList(question);
     }
 
+    /**
+     * 根据id查询
+     * @param id
+     * @return
+     */
+    public Question queryQuestionById(Integer id) {
+        return  questionMapper.queryQuestionById(id);
+    }
+
+    /**
+     * 新增
+     * @param question
+     */
+    public void insertQuestion(Question question) {
+        questionMapper.insertQuestion(question);
+    }
+    /**
+     * 修改
+     * @param question
+     */
+    public void updateQuestion(Question question) {
+        questionMapper.updateQuestion(question);
+    }
+
+    /**
+     * 根据id删除
+     * @param id
+     */
+    public void deleteQuestionById(Integer id) {
+        questionMapper.deleteQuestionById(id);
+    }
+
+    //累加阅读数
+    public void incView(Integer id) {
+        Question question = new Question();
+        question.setId(id);
+        question.setViewCount(1);
+        questionMapper.incView(question);
+    }
+
+    public List<QuestionDTO> queryQuestionTag(QuestionDTO questionDTO) {
+        if(StringUtils.isBlank(questionDTO.getTag())){
+            return new ArrayList<>();
+        }
+        String[] tags = StringUtils.split(questionDTO.getTag());
+        String regexpTag = Arrays.stream(tags).collect(Collectors.joining("|"));
+
+        Question question = new Question();
+        question.setId(questionDTO.getId());
+        question.setTag(regexpTag);
+
+        List<Question> questionList = questionMapper.queryQuestionTag(question);
+        //把questionList转成QuestionDTO  //遍历每一个然后放进去
+        List<QuestionDTO> questionDTOList = questionList.stream().map(q -> {
+            QuestionDTO questionDTOs = new QuestionDTO();
+            BeanUtils.copyProperties(q,questionDTOs);
+            return questionDTOs;
+        }).collect(Collectors.toList());
+        return questionDTOList;
+    }
 }
