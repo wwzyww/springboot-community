@@ -1,3 +1,14 @@
+
+
+//半成品，不弄了，下一个项目
+
+
+
+
+
+
+
+
 CREATE TABLE `user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `account_id` varchar(256) DEFAULT NULL,
